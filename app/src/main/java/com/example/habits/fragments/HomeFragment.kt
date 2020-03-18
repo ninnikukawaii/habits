@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.habits.MainActivity
 import com.example.habits.R
+import com.example.habits.habit.Habit
+import com.example.habits.habit.HabitListAdapter
+import com.example.habits.habit.HabitType
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment : Fragment() {
@@ -26,19 +29,27 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_home_to_editHabitFragment)
+            val bundle = Bundle()
+                .apply {
+                    putString(EditFragment.TYPE, EditFragment.Action.ADD.name)
+                }
+            findNavController().navigate(R.id.action_nav_home_to_editHabitFragment, bundle)
         }
 
-        /*recyclerView.adapter = HabitAdapter(emptyList()) { position: Int, habit ->
-            val startSecondActivity = Intent(
-                context,
-                AddingActivity::class.java
-            )
-            this.startActivityForResult(startSecondActivity, MainActivity.EDIT_HABIT_REQUEST_CODE)
-        }*/
+        val habits = if (activity is MainActivity) {
+            (activity as MainActivity).habits
+        } else {
+            emptyList<Habit>()
+        }
 
-        val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-        list.addItemDecoration(dividerItemDecoration)
-        //callbackCreatedRecycleView?.recycleViewCreated(recyclerView)
+        activity?.let { activity ->
+            viewPager.adapter = HabitListAdapter(activity, habits)
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = when(position) {
+                    0 -> HabitType.Good.name
+                    else -> HabitType.Bad.name
+                }
+            }
+        }
     }
 }

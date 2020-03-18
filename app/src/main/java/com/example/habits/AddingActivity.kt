@@ -23,7 +23,7 @@ class AddingActivity: Activity() {
         const val INDEX = "INDEX"
     }
 
-    private var type = MainActivity.ADDING
+    private var type = MainActivity.ADD
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

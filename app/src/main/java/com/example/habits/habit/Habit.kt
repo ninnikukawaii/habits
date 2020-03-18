@@ -7,4 +7,13 @@ class Habit(
     var type: HabitType,
     var period: Int,
     var amount: Int
-)
+) {
+    companion object {
+        const val NAME = "NAME"
+        const val DESCRIPTION = "DESCRIPTION"
+        const val PRIORITY = "PRIORITY"
+        const val TYPE = "TYPE"
+        const val PERIOD = "PERIOD"
+        const val AMOUNT = "AMOUNT"
+    }
+}
