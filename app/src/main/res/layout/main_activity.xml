@@ -19,7 +19,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/menu"
-        android:background="@color/pink"
-        app:headerLayout="@layout/nav_header_main"/>
+        android:background="@color/pink"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

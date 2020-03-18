@@ -7,7 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.habits.R
 
-class EditHabitFragment : Fragment() {
+class HabitsFragment : Fragment() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = HabitsFragment().apply { arguments = Bundle().apply { } }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +20,6 @@ class EditHabitFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_edit_habit, container, false)
+        return inflater.inflate(R.layout.habits_fragment, container, false)
     }
 }

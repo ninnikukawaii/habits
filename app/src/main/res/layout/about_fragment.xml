@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@color/pink"
-    tools:context="com.example.habits.fragments.AboutAppFragment">
+    tools:context="com.example.habits.fragments.AboutFragment">
 
     <TextView
         android:id="@+id/title"
@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:text="@string/aboutText"
         android:textColor="@color/dark_red"
-        android:textSize="40sp"
+        android:textSize="@dimen/big_text"
         android:textStyle="bold"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/top_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -24,11 +24,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/top_margin"
         android:text="@string/about_description"
         android:textAlignment="center"
         android:textColor="@color/dark_red"
-        android:textSize="20sp"
+        android:textSize="@dimen/small_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />

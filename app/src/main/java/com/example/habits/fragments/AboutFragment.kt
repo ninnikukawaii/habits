@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.habits.R
 
-class AboutAppFragment : Fragment() {
+class AboutFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =  AboutAppFragment().apply { arguments = Bundle().apply {} }
+        fun newInstance(param1: String, param2: String) =  AboutFragment().apply { arguments = Bundle().apply {} }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +20,6 @@ class AboutAppFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_about_app, container, false)
+        return inflater.inflate(R.layout.about_fragment, container, false)
     }
 }
