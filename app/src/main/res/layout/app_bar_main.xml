@@ -23,18 +23,4 @@
 
     <include layout="@layout/content_main"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="bottom|end"
-        app:backgroundTint="@color/white"
-        app:srcCompat="@drawable/plus"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

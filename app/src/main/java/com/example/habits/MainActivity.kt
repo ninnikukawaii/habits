@@ -1,24 +1,18 @@
 package com.example.habits
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.habits.habit.Habit
-import com.example.habits.habit.HabitAdapter
-import com.example.habits.habit.HabitType
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.habits.habit.PriorityLevel
-import kotlinx.android.synthetic.main.app_bar_main.*
+import com.example.habits.habit.Habit
 import kotlinx.android.synthetic.main.main_activity.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val habits = mutableListOf<Habit>()
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     companion object Consts {
@@ -32,19 +26,26 @@ class MainActivity : AppCompatActivity() {
 
         //setSupportActionBar(toolbar)
 
-        button.setOnClickListener {
-            val startSecondActivity = Intent(
-                this,
-                AddingActivity::class.java
-            )
-            startActivityForResult(startSecondActivity, ADDING)
-        }
+        //button.setOnClickListener {
+        //    val startSecondActivity = Intent(
+        //        this,
+        //        AddingActivity::class.java
+        //    )
+        //    startActivityForResult(startSecondActivity, ADDING)
+        //}
+
+        //setSupportActionBar(toolbar)
 
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.nav_home, R.id.nav_about), navDrawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navDrawer.setupWithNavController(navController)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

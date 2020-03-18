@@ -9,8 +9,7 @@ import android.widget.RadioButton
 import androidx.core.view.children
 import com.example.habits.habit.HabitType
 import com.example.habits.habit.PriorityLevel
-import kotlinx.android.synthetic.main.activity_add.*
-import java.lang.Exception
+import kotlinx.android.synthetic.main.fragment_edit_habit.*
 
 class AddingActivity: Activity() {
 
@@ -28,7 +27,7 @@ class AddingActivity: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add)
+        setContentView(R.layout.fragment_edit_habit)
         initialize()
         saveButton.setOnClickListener(this::handle)
     }
