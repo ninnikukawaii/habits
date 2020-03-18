@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Habits</string>
+    <string name="name">Name:</string>
+    <string name="description">Description:</string>
+    <string name="priority">Priority:</string>
+    <string name="type">Type:</string>
+    <string name="good">Good</string>
+    <string name="bad">Bad</string>
+    <string name="repeat_count">Repeat count:</string>
+    <string name="period">Period:</string>
+    <string name="new_habit">Your habit</string>
+    <string name="add">Save</string>
+    <string name="aboutText">Habits v0.0.2</string>
+    <string-array name="priorities">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string name="home_page">Home page</string>
+    <string name="about_app">About</string>
+
+
+</resources>
