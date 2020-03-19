@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
                     0 -> HabitType.Good.name
                     else -> HabitType.Bad.name
                 }
-            }
+            }.attach()
         }
     }
 }
