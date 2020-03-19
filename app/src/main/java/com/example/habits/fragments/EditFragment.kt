@@ -25,7 +25,7 @@ class EditFragment : Fragment() {
     private var amount: Int? = null
 
     companion object {
-        const val TYPE = "TYPE"
+        const val TYPE = "ACTION"
     }
 
     enum class Action {
@@ -142,6 +142,12 @@ class EditFragment : Fragment() {
             return
         }
 
+        val oldType = try {
+            HabitType.valueOf(type)
+        } catch (e: java.lang.IllegalArgumentException) {
+            null
+        }
+
         when (action) {
             Action.ADD -> activity.addHabit(
                 Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount)
@@ -151,7 +157,7 @@ class EditFragment : Fragment() {
                 if (position != null && position != -1) {
                     activity.editHabit(
                         Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount),
-                        position
+                        position, oldType
                     )
                 }
             }

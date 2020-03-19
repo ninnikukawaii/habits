@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.habits.fragments.HomeFragment"
-        android:label="fragment_home"
+        android:label="@string/home_page"
         tools:layout="@layout/home_fragment">
         <action
             android:id="@+id/action_nav_home_to_editHabitFragment"
@@ -18,13 +18,13 @@
     <fragment
         android:id="@+id/nav_about"
         android:name="com.example.habits.fragments.AboutFragment"
-        android:label="fragment_about_app"
+        android:label="@string/about_app"
         tools:layout="@layout/about_fragment" />
 
     <fragment
         android:id="@+id/editHabitFragment"
         android:name="com.example.habits.fragments.EditFragment"
-        android:label="fragment_edit_habit"
+        android:label="@string/edit"
         tools:layout="@layout/edit_fragment" />
 
 </navigation>

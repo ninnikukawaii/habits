@@ -22,6 +22,7 @@
 
     <string name="home_page">Home page</string>
     <string name="about_app">About</string>
+    <string name="edit">Habit</string>
     <string name="about_description">Habit tracking app for&#10;Android Development Course</string>
     <string name="menu_title">Menu</string>
 

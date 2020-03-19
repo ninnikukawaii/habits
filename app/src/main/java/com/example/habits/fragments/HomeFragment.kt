@@ -1,17 +1,21 @@
 package com.example.habits.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.habits.MainActivity
 import com.example.habits.R
 import com.example.habits.habit.Habit
+import com.example.habits.habit.HabitAdapter
 import com.example.habits.habit.HabitListAdapter
 import com.example.habits.habit.HabitType
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment : Fragment() {
@@ -36,20 +40,31 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_home_to_editHabitFragment, bundle)
         }
 
-        val habits = if (activity is MainActivity) {
-            (activity as MainActivity).habits
-        } else {
-            emptyList<Habit>()
-        }
+        viewPager.adapter = HabitListAdapter(childFragmentManager,
+            object : SetRecycleView {
+                override fun set(context: Context, recyclerView: RecyclerView, habitType: HabitType) {
+                    val viewHabits = (activity as MainActivity).getList(habitType)
 
-        activity?.let { activity ->
-            viewPager.adapter = HabitListAdapter(activity, habits)
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = when(position) {
-                    0 -> HabitType.Good.name
-                    else -> HabitType.Bad.name
+                    recyclerView.adapter = HabitAdapter(viewHabits) { position: Int, habit ->
+                        val bundle = Bundle()
+                            .apply {
+                                putString(Habit.NAME, habit.name)
+                                putString(Habit.DESCRIPTION, habit.description)
+                                putInt(Habit.PRIORITY, habit.priority.priority)
+                                putString(Habit.TYPE, habit.type.name)
+                                putInt(Habit.PERIOD, habit.period)
+                                putInt(Habit.AMOUNT, habit.amount)
+                                putInt(MainActivity.POSITION, position)
+                                putString(EditFragment.TYPE, EditFragment.Action.EDIT.name)
+                            }
+                        findNavController().navigate(R.id.action_nav_home_to_editHabitFragment, bundle)
+                    }
+
+                    val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+                    recyclerView.addItemDecoration(dividerItemDecoration)
                 }
-            }.attach()
-        }
+            })
+
+        tabLayout.setupWithViewPager(viewPager)
     }
 }
