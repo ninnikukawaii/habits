@@ -5,17 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.habits.MainActivity
 import com.example.habits.R
-import com.example.habits.habit.Habit
-import com.example.habits.habit.HabitAdapter
-import com.example.habits.habit.HabitListAdapter
-import com.example.habits.habit.HabitType
+import com.example.habits.views.HabitListAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment : Fragment() {
@@ -40,31 +36,22 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_nav_home_to_editHabitFragment, bundle)
         }
 
-        viewPager.adapter = HabitListAdapter(childFragmentManager,
-            object : SetRecycleView {
-                override fun set(context: Context, recyclerView: RecyclerView, habitType: HabitType) {
-                    val viewHabits = (activity as MainActivity).getList(habitType)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) { }
 
-                    recyclerView.adapter = HabitAdapter(viewHabits) { position: Int, habit ->
-                        val bundle = Bundle()
-                            .apply {
-                                putString(Habit.NAME, habit.name)
-                                putString(Habit.DESCRIPTION, habit.description)
-                                putInt(Habit.PRIORITY, habit.priority.priority)
-                                putString(Habit.TYPE, habit.type.name)
-                                putInt(Habit.PERIOD, habit.period)
-                                putInt(Habit.AMOUNT, habit.amount)
-                                putInt(MainActivity.POSITION, position)
-                                putString(EditFragment.TYPE, EditFragment.Action.EDIT.name)
-                            }
-                        findNavController().navigate(R.id.action_nav_home_to_editHabitFragment, bundle)
-                    }
-
-                    val dividerItemDecoration = DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
-                    recyclerView.addItemDecoration(dividerItemDecoration)
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (BottomSheetBehavior.STATE_DRAGGING == newState) {
+                    button.animate().scaleX(0f).scaleY(0f).setDuration(300).start()
+                    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                } else if (BottomSheetBehavior.STATE_COLLAPSED == newState) {
+                    button.animate().scaleX(1f).scaleY(1f).setDuration(300).start()
                 }
-            })
+            }
+        })
 
+        viewPager.adapter = HabitListAdapter(childFragmentManager)
         tabLayout.setupWithViewPager(viewPager)
     }
 }

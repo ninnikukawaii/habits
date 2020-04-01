@@ -1,4 +1,4 @@
-package com.example.habits.habit
+package com.example.habits.models
 
 enum class HabitType {
     Good, Bad

@@ -4,25 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.habits.MainActivity
 import com.example.habits.R
-import com.example.habits.habit.Habit
-import com.example.habits.habit.HabitType
-import com.example.habits.habit.PriorityLevel
+import com.example.habits.models.Habit
+import com.example.habits.models.HabitLists
+import com.example.habits.models.HabitType
+import com.example.habits.models.PriorityLevel
+import com.example.habits.view_models.EditViewModel
 import kotlinx.android.synthetic.main.edit_fragment.*
 
 class EditFragment : Fragment() {
 
-    private lateinit var actionString: String
-    private lateinit var name: String
-    private lateinit var description: String
-    private lateinit var type: String
-    private var priority: Int? = null
-    private var period: Int? = null
-    private var amount: Int? = null
+    private val viewModel: EditViewModel by viewModels()
 
     companion object {
         const val TYPE = "ACTION"
@@ -36,13 +35,18 @@ class EditFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            actionString = it.getString(TYPE, "")
-            name = it.getString(Habit.NAME, "")
-            description = it.getString(Habit.DESCRIPTION, "")
-            priority = it.getInt(Habit.PRIORITY, 1)
-            type = it.getString(Habit.TYPE, "")
-            period = it.getInt(Habit.PERIOD, -1)
-            amount = it.getInt(Habit.AMOUNT, -1)
+            val habit: Habit = it.getSerializable(Habit.HABIT) as? Habit
+                ?: Habit("", "", PriorityLevel(1), HabitType.Good, -1, -1)
+
+            viewModel.name.value = habit.name
+            viewModel.description.value = habit.description
+            viewModel.priority.value = habit.priority.priority
+            viewModel.type.value = habit.type.name
+            viewModel.period.value = habit.period
+            viewModel.amount.value = habit.amount
+            viewModel.id.value = habit.id
+
+            viewModel.actionType.value = it.getString(TYPE, "")
         }
     }
 
@@ -54,40 +58,57 @@ class EditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val enumActionType = try {
-            Action.valueOf(actionString)
+            Action.valueOf(viewModel.actionType.value ?: "")
         } catch (e: IllegalArgumentException) {
-            alertIncorrectData("Unknown action type '$actionString'")
+            alertIncorrectData("Unknown action type '${viewModel.actionType.value}'")
             findNavController().popBackStack()
             null
         }
 
-        initialize()
+        observeInitialize()
+
+        ArrayAdapter.createFromResource(
+            context!!,
+            R.array.priorities,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
 
         saveButton.setOnClickListener {
             if (activity is MainActivity && enumActionType != null) {
-                validate(enumActionType, activity as MainActivity)
+                validate(enumActionType)
             }
         }
     }
 
-    private fun initialize() {
-        nameInput.setText(name)
-        descriptionInput.setText(description)
-        val position = priority ?: 1
-        spinner.setSelection(position - 1)
+    private fun observeInitialize() {
+        viewModel.name.observe(viewLifecycleOwner, Observer { name -> nameInput.setText(name) })
+        viewModel.description.observe(viewLifecycleOwner, Observer { description -> descriptionInput.setText(description) })
 
-        when (type) {
+        viewModel.priority.observe(viewLifecycleOwner, Observer { priority ->
+            val position = priority ?: 1
+            spinner.setSelection(position - 1)
+        })
+
+        viewModel.type.observe(viewLifecycleOwner, Observer { type -> when (type) {
             HabitType.Good.name -> good.isChecked = true
             HabitType.Bad.name -> bad.isChecked = true
-        }
+        } })
 
-        val periodSting = if (period != null && period == -1) "" else period.toString()
-        periodInput.setText(periodSting)
-        val amountString = if (amount != null && amount == -1) "" else amount.toString()
-        amountInput.setText(amountString)
+        viewModel.period.observe(viewLifecycleOwner, Observer { period ->
+            val periodSting = if (period != null && period == -1) "" else period.toString()
+            periodInput.setText(periodSting)
+        })
+
+        viewModel.amount.observe(viewLifecycleOwner, Observer { amount ->
+            val amountString = if (amount != null && amount == -1) "" else amount.toString()
+            amountInput.setText(amountString)
+        })
     }
 
-    private fun validate(action: Action, activity: MainActivity) {
+    private fun validate(action: Action) {
         val habitName = if (nameInput.text.toString() != "")
             nameInput.text.toString()
         else {
@@ -142,24 +163,14 @@ class EditFragment : Fragment() {
             return
         }
 
-        val oldType = try {
-            HabitType.valueOf(type)
-        } catch (e: java.lang.IllegalArgumentException) {
-            null
-        }
-
         when (action) {
-            Action.ADD -> activity.addHabit(
+            Action.ADD -> HabitLists.INSTANCE.add(
                 Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount)
             )
             Action.EDIT -> {
-                val position = arguments?.getInt(MainActivity.POSITION, -1)
-                if (position != null && position != -1) {
-                    activity.editHabit(
-                        Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount),
-                        position, oldType
-                    )
-                }
+                val habit = Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount)
+                habit.id = viewModel.id.value
+                HabitLists.INSTANCE.edit(habit)
             }
         }
 

@@ -1,32 +1,35 @@
 package com.example.habits.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habits.R
-import com.example.habits.habit.HabitType
+import com.example.habits.models.Habit
+import com.example.habits.models.HabitType
+import com.example.habits.view_models.HabitsViewModel
+import com.example.habits.views.HabitAdapter
 import kotlinx.android.synthetic.main.habits_fragment.*
-import java.io.Serializable
 
 class HabitsFragment : Fragment() {
 
-    private lateinit var callbackSetRecycleView: SetRecycleView
     private lateinit var habitType: HabitType
+    private val viewModel: HabitsViewModel by activityViewModels()
 
     companion object {
         private const val HABIT_TYPE = "HABIT_TYPE"
-        private const val RECYCLER_VIEW_CONFIGURE = "recyclerViewConfigure"
 
         @JvmStatic
-        fun newInstance(setRecycleView: SetRecycleView, habitType: HabitType) =
+        fun newInstance(habitType: HabitType) =
             HabitsFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(HABIT_TYPE, habitType)
-                    putSerializable(RECYCLER_VIEW_CONFIGURE, setRecycleView)
                 }
             }
     }
@@ -34,7 +37,6 @@ class HabitsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            callbackSetRecycleView = (it.getSerializable(RECYCLER_VIEW_CONFIGURE) as SetRecycleView)
             habitType = (it.getSerializable(HABIT_TYPE) as HabitType)
         }
     }
@@ -46,10 +48,29 @@ class HabitsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        callbackSetRecycleView.set(context!!, list, habitType)
-    }
-}
+        list.adapter =
+            HabitAdapter { habit ->
+                val bundle = Bundle()
+                    .apply {
+                        putSerializable(Habit.HABIT, habit)
+                        putString(
+                            EditFragment.TYPE,
+                            EditFragment.Action.EDIT.name
+                        )
+                    }
+                findNavController().navigate(
+                    R.id.action_nav_home_to_editHabitFragment,
+                    bundle
+                )
+            }
 
-interface SetRecycleView : Serializable {
-    fun set(context: Context, recyclerView: RecyclerView, habitType: HabitType)
+        viewModel.getList(habitType).observe(viewLifecycleOwner, Observer { habits ->
+            (list.adapter as HabitAdapter).habits = habits
+            (list.adapter as HabitAdapter).notifyDataSetChanged()
+        })
+
+        val dividerItemDecoration =
+            DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+        list.addItemDecoration(dividerItemDecoration)
+    }
 }

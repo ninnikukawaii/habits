@@ -1,14 +1,15 @@
-package com.example.habits.habit
+package com.example.habits.views
 
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habits.R
+import com.example.habits.models.Habit
 import kotlinx.android.extensions.LayoutContainer
 
 class HabitViewHolder(
-    override val containerView: View, private val event: (position: Int, habit: Habit) -> Unit
+    override val containerView: View, private val event: (habit: Habit) -> Unit
 ) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     private val nameText = containerView.findViewById<TextView>(R.id.name)
@@ -26,7 +27,7 @@ class HabitViewHolder(
         periodText.text = "${habit.amount} times every ${habit.period} days"
 
         layout.setOnClickListener {
-            event(adapterPosition, habit)
+            event(habit)
         }
     }
 }

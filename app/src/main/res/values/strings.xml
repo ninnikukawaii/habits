@@ -25,6 +25,6 @@
     <string name="edit">Habit</string>
     <string name="about_description">Habit tracking app for&#10;Android Development Course</string>
     <string name="menu_title">Menu</string>
-
-
+    <string name="filtration">Enter filtration tag</string>
+    <string name="pull">Pull</string>
 </resources>
