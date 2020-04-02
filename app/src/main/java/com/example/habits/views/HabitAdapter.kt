@@ -7,13 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.habits.R
 import com.example.habits.models.Habit
 
-class HabitAdapter(private val event: (habit: Habit) -> Unit) : RecyclerView.Adapter<HabitViewHolder>() {
+class HabitAdapter(
+    private val editEvent: (habit: Habit) -> Unit, private val deleteEvent: (habit: Habit) -> Unit
+) : RecyclerView.Adapter<HabitViewHolder>() {
 
     var habits: List<Habit> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return HabitViewHolder(inflater.inflate(R.layout.habit_view, parent, false), event)
+        return HabitViewHolder(inflater.inflate(R.layout.habit_view, parent, false), editEvent, deleteEvent)
     }
 
     override fun getItemCount(): Int = habits.size

@@ -164,13 +164,13 @@ class EditFragment : Fragment() {
         }
 
         when (action) {
-            Action.ADD -> HabitLists.INSTANCE.add(
+            Action.ADD -> HabitLists.instance.add(
                 Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount)
             )
             Action.EDIT -> {
                 val habit = Habit(habitName, habitDescription, habitPriority, habitType, habitPeriod, habitAmount)
                 habit.id = viewModel.id.value
-                HabitLists.INSTANCE.edit(habit)
+                HabitLists.instance.edit(habit)
             }
         }
 

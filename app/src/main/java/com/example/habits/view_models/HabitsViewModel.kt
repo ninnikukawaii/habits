@@ -1,6 +1,7 @@
 package com.example.habits.view_models
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.example.habits.models.Habit
 import com.example.habits.models.HabitLists
@@ -16,9 +17,18 @@ class HabitsViewModel : ViewModel() {
             badHabitsForShow.value = filterByTitle(value, HabitType.Bad)
         }
 
+    private val goodObserver: Observer<List<Habit>>
+    private val badObserver: Observer<List<Habit>>
+
     init {
-        goodHabitsForShow.value = HabitLists.INSTANCE.getList(HabitType.Good)
-        badHabitsForShow.value = HabitLists.INSTANCE.getList(HabitType.Bad)
+        goodObserver = Observer { list ->
+            goodHabitsForShow.value = list
+        }
+        HabitLists.instance.getList(HabitType.Good).observeForever(goodObserver)
+        badObserver = Observer { list ->
+            badHabitsForShow.value = list
+        }
+        HabitLists.instance.getList(HabitType.Bad).observeForever(badObserver)
     }
 
     fun getList(type: HabitType): MutableLiveData<List<Habit>> = when (type) {
@@ -27,7 +37,14 @@ class HabitsViewModel : ViewModel() {
     }
 
     private fun filterByTitle(containedSubstring: String, habitType: HabitType) : List<Habit>
-            = HabitLists.INSTANCE.getList(habitType).filter { habit ->
+            = HabitLists.instance.getList(habitType).value
+        ?.filter { habit ->
             habit.name.toLowerCase(Locale.ROOT).contains(containedSubstring.toLowerCase(Locale.ROOT))
+        } ?: emptyList()
+
+    override fun onCleared() {
+        super.onCleared()
+        HabitLists.instance.getList(HabitType.Good).removeObserver(goodObserver)
+        HabitLists.instance.getList(HabitType.Good).removeObserver(badObserver)
     }
 }

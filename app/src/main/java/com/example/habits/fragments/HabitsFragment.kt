@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.habits.R
 import com.example.habits.models.Habit
+import com.example.habits.models.HabitLists
 import com.example.habits.models.HabitType
 import com.example.habits.view_models.HabitsViewModel
 import com.example.habits.views.HabitAdapter
@@ -49,20 +50,24 @@ class HabitsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         list.adapter =
-            HabitAdapter { habit ->
-                val bundle = Bundle()
-                    .apply {
-                        putSerializable(Habit.HABIT, habit)
-                        putString(
-                            EditFragment.TYPE,
-                            EditFragment.Action.EDIT.name
-                        )
-                    }
-                findNavController().navigate(
-                    R.id.action_nav_home_to_editHabitFragment,
-                    bundle
-                )
-            }
+            HabitAdapter (
+                { habit ->
+                    val bundle = Bundle()
+                        .apply {
+                            putSerializable(Habit.HABIT, habit)
+                            putString(
+                                EditFragment.TYPE,
+                                EditFragment.Action.EDIT.name
+                            )
+                        }
+                    findNavController().navigate(
+                        R.id.action_nav_home_to_editHabitFragment,
+                        bundle
+                    )
+                }, { habit ->
+                    HabitLists.instance.delete(habit)
+                }
+            )
 
         viewModel.getList(habitType).observe(viewLifecycleOwner, Observer { habits ->
             (list.adapter as HabitAdapter).habits = habits
